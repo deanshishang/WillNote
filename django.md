@@ -64,3 +64,13 @@ django-admin.py is Django's command-line utility for administrative tasks.In add
 
 The django-admin.py script should be on your system path if you installed django via ite setup.py. you can find it in /django/bin.Consider symlinking it from some place on your path, such as /usr/local/bin.
 Available commands see the [this](https://docs.djangoproject.com/en/1.4/ref/django-admin/)
+
+*****************************************************************************************************************************
+##Testing Django applications
+Automated testing is an extramely useful bug-killing tool for the morden web developer, You can use a collection of tests - a test suite - to solve, or avoid, a number of problems:
+*when you are writting new code, you can use tests to validate your code works as expected.
+*when you are refactoring your old code or modifying old code, you can use tests to ensure your changes have not affected your application's behavior unexpectedly
+
+Testing a web application is a complex task, because a web application is made of several layers of logic--from http-level request handing, to form validation and process, to template rendering. with django's testing-excusion framework and assorted utilities, you can simulate requests, insert test data, inspect your application's output and generally varify your code is doing what it should be doing.it's really easy,this note is split into two primary sections, first explain how to write tests with django, then explain how to run them.
+
+###Writing tests

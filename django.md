@@ -57,3 +57,10 @@ Custom default settings, If you'd like default values to come from somewhere oth
 Use exactly one of either configure() or DJNAGO_SETTINGS_MODULE. Not both, and not neither.
 
 *****************************************************************************************************************************
+##django-admin.py and manage.py
+django-admin.py is Django's command-line utility for administrative tasks.In addition, manage.py is automatically created in each django project, manage.py is a thin wrapper aroung django-admin.py that take care of two things for you before delegating to(依托) django-admin.py:
+**It puts your project package on sys.path
+**It sets the DJANGO_SETTINGS_MODULE environment variable so that it points to your project's settings file.
+
+The django-admin.py script should be on your system path if you installed django via ite setup.py. you can find it in /django/bin.Consider symlinking it from some place on your path, such as /usr/local/bin.
+Available commands see the [this](https://docs.djangoproject.com/en/1.4/ref/django-admin/)

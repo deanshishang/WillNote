@@ -27,3 +27,9 @@ The only place you should assign to settings is in a settings file.
 
 ###Security
 A settings files contains sensitive infomation, such as the database passwd, you should make every attempts to limit access to it. for example, change its file pemission so that only you and your webserver's, user can read it.
+
+###For a full list of available settings, see the [setting reference](https://docs.djangoproject.com/en/1.4/ref/settings/)
+
+###Creating your own settings
+setting names are in all uppercase and do't reinvent an already exsiting settings
+For settings are sequence, Django itself use tuples, rather than lists, this is only a convention（惯例）

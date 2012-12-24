@@ -1,4 +1,6 @@
-#django settings
+#The development process
+
+##django settings
 
 ###default settings
 	
@@ -23,4 +25,5 @@ Your should not alter settings in your application at runtime, do not do this in
 
 The only place you should assign to settings is in a settings file.
 
-
+###Security
+A settings files contains sensitive infomation, such as the database passwd, you should make every attempts to limit access to it. for example, change its file pemission so that only you and your webserver's, user can read it.

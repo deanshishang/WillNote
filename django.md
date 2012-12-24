@@ -59,8 +59,9 @@ Use exactly one of either configure() or DJNAGO_SETTINGS_MODULE. Not both, and n
 *****************************************************************************************************************************
 ##django-admin.py and manage.py
 django-admin.py is Django's command-line utility for administrative tasks.In addition, manage.py is automatically created in each django project, manage.py is a thin wrapper aroung django-admin.py that take care of two things for you before delegating to(依托) django-admin.py:
-**It puts your project package on sys.path
-**It sets the DJANGO_SETTINGS_MODULE environment variable so that it points to your project's settings file.
+
+1,It puts your project package on sys.path
+2,It sets the DJANGO_SETTINGS_MODULE environment variable so that it points to your project's settings file.
 
 The django-admin.py script should be on your system path if you installed django via ite setup.py. you can find it in /django/bin.Consider symlinking it from some place on your path, such as /usr/local/bin.
 Available commands see the [this](https://docs.djangoproject.com/en/1.4/ref/django-admin/)
@@ -68,8 +69,9 @@ Available commands see the [this](https://docs.djangoproject.com/en/1.4/ref/djan
 *****************************************************************************************************************************
 ##Testing Django applications
 Automated testing is an extramely useful bug-killing tool for the morden web developer, You can use a collection of tests - a test suite - to solve, or avoid, a number of problems:
-*when you are writting new code, you can use tests to validate your code works as expected.
-*when you are refactoring your old code or modifying old code, you can use tests to ensure your changes have not affected your application's behavior unexpectedly
+
+1,when you are writting new code, you can use tests to validate your code works as expected.
+2,when you are refactoring your old code or modifying old code, you can use tests to ensure your changes have not affected your application's behavior unexpectedly
 
 Testing a web application is a complex task, because a web application is made of several layers of logic--from http-level request handing, to form validation and process, to template rendering. with django's testing-excusion framework and assorted utilities, you can simulate requests, insert test data, inspect your application's output and generally varify your code is doing what it should be doing.it's really easy,this note is split into two primary sections, first explain how to write tests with django, then explain how to run them.
 

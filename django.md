@@ -36,4 +36,20 @@ setting names are in all uppercase and do't reinvent an already exsiting setting
 For settings are sequence, Django itself use tuples, rather than lists, this is only a convention（惯例）
 
 ###Using settings without setting DJANGO_SETTINGS_MODULE and Custom default settings
+You can configure settings manually, do this by calling:
+	
+	django.conf.settings.configure(default_settings, **settings)
 
+	from django.conf import settings
+	settings.configure(DEBUG=Ture, TEMPLATE_DEBUG=True, TEMPLATE_DIRS=('/home/web-apps/myapp'))
+
+Pass configure() as many keyword as you'd like, with each keyword argument representing a setting and its value, if a particular setting is not passed to configure() and is needed at some later point, django will use the default setting value
+
+Configuring Django in this fashion is mostly necessary---and, indeed, recommended---when you are using a piece of framework inside a larger application
+
+Custom default settings, If you'd like default values to come from somewhere other than gloabl_settings, you can pass in a module or class that provides the default settings as the default_settings argument(or as the first positional argument)in the call to configure
+
+###Either configure() or DJANGO_SETTINGS_MODULE is required
+Use exactly one of either configure() or DJNAGO_SETTINGS_MODULE. Not both, and not neither.
+
+*****************************************************************************************************************************

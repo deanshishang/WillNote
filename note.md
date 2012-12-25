@@ -25,3 +25,11 @@ model表关系，一张表里边的两个外键组成的关系是多对多
 	>>> b.entry_set.count()
 	3
 
+##Copying model instances
+
+	entry = Entry.objects.all()[0] #some previous entry
+	old_authors = entry.authors.all()  #???
+	entry.pk = None
+	entry.save()
+	entry.authors = old_authors #saves new many2many relations
+

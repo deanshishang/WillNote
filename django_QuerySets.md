@@ -163,15 +163,88 @@ Each queryset contains a cache, to minimize database access, It is important to 
 	print [p.pub_date for p in query]
 
 ###Complex lookups with Q objects
+If you need to excute more complex queris like OR statement, you can use Q objects.
+Q objects can be combined using the & and | operators. When an operator is used on two Q objects, it uields a new Q object.
 
+	from django.db.models import Q
+	Q(question__startwith="Who") | Q(question__startwith='What')
+	WHERE question LIKE 'Who%' OR question LIKE 'What%'
+
+	Q(question__startwith='Who') | ~Q(pub_date__year=2005)
+
+	Poll.objects.get(Q(question_startwith="Who"), Q(pub_date=date(2005, 5, 2))|Q(pub_date=date(2005, 5, 6)))
+	SELECT * from polls WHERE question LIKE 'Who%' AND (pub_date='2005-05-02' OR pub_date='2005-05-06')
+If a Q object is provided, it must precede the defination of any keyword arguments.
+	VSALID QUERY ---> equivalent to the previous example.
+	Poll.objects.get(Q(pub_date=date(2005, 5, 2))|Q(pub_date=date(2005, 5, 6)), question__startwith='who')
+	INVALID QUERY--->
+	Poll.objects.get(question__startwith='Who',Q(pub_date=date(2005, 5, 2))|Q(pub_date=date(2005, 5, 6)))
+	
 ###Comparing objects
+The following two statements are equivalent:
+	
+	some_entry == other_entry
+	some_entry.id == other_entry.id # compare primary key values og two models.
+
+Comprisons will always use the primary key, whatever it's called
 
 ###Delete objects
+	
+	e.delete()
+
+This deletes all Entry objects with a pub_date year of 2005.
+
+	Entry.objects.filter(pub_date__year=2005).delete()
+
+This will delete the Blog and all of its Entry objects
+
+	b = Blog.objects.get(pk=1)
+	b.delete()
+
+delete() is the only QuerySet method that is not exposed on a Manager itself. This is a safety mechnism to prevent you from accidentally requesting Entry.objects.delete(), and delete all the entries. If you do want to delete all the objects, then you have to explicitly request a complete query set.
+
+	Entry.objects.all().delete()
 
 ###Copying model instances
+No built-in method for copying model instance, but it is possible to easily create new instance with all field;s valuee copied. You can just set pk to None.
+
+	blog = Blog(name="My blog", tagline='Blogging is easy')
+	blog.save()  #post.pk == 1
+	blog.pk = None
+	blog.save() #post.pk == 2
+
+Things get more complicated if you use inheritancce. Consider this
+
+	class ThemeBlog(Blog):
+		theme = models.CharField(max_length=200)
+
+	django_blog = ThemeBlog(name="XXX", tagline='XXX', theme='python')
+	django_blog.save() # django_blog.pk == 3
+
+Due to how inheritance works, you have to set both pk and id to None
+
+	django_blog.pk = None
+	django_blog.id = None
+	django_blog.save() #django_blgo.pk == 4
+
+This process does not copy related objects, If you want to copy relations, you have ti write a little bit more code. Entry has a many to many field to Author
+
+	entry = Entry.objects.all()[0] #some previous entry
+	old_authors = entry.authors.all()  #???
+	entry.pk = None
+	entry.save()
+	entry.authors = old_authors #saves new many2many relations
 
 ###Undating multiple objects at once
+Sometimes you want to set a filed to a paricular value for all the objects in a QuerySet. You can do this with the update() method.
+	
+	Entry.objects.filter(pub_date__year=2007).update(headline='Everythings')
 
+To update a non-relation filed, provide the new value as a constant, To update ForeignKey fields, set the new value to be the new model instance you want to point to
+
+	b = Blog.objects.get(pk=1)
+	Entry.objects.all().update(blog=b)
+		
 ###Related objects
 ####One-to-many relationships
 ####Many-to-many relationships

@@ -121,6 +121,13 @@ If there was no author associated with an entry, it would be also treat as if th
 
 #####Spanning multi-valued relationships
 
+	>>> d = Blog.objects.filter(entry__headline__contains="beat", entry__pub_date__year=2012)
+	>>> d
+	[<Blog: shi blog>, <Blog: dean blog>]
+	>>> d = Blog.objects.filter(entry__headline__contains="beat").filter(entry__pub_date__year=2012)
+	>>> d
+	[<Blog: shi blog>, <Blog: shi blog>, <Blog: dean blog>, <Blog: dean blog>, <Blog: dean blog>]
+
 ###Complex lookups with Q objects
 
 ###Comparing objects

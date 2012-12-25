@@ -128,6 +128,40 @@ If there was no author associated with an entry, it would be also treat as if th
 	>>> d
 	[<Blog: shi blog>, <Blog: shi blog>, <Blog: dean blog>, <Blog: dean blog>, <Blog: dean blog>]
 
+####Filters can reference fields on the model (过滤器可以在模型上引用字段) F() expression
+What if you want compare the value of a model field with another field on the same models?
+
+	from django.db.models import F
+	Entry.objects.filter(n_comments__gt=F('n_pingbacks'))
+	Entry.objects.filter(n_comments__gt=F('n_pingbacks')*2)
+	Entry.objects.filter(authors__name=F('blog)__name'))
+
+For date and date/time fields you can add or subtract a timedelta object. The following would return all entries that were modified more than 3 days after they were published
+
+	from datetime import timedelta
+	Entry.objects.filter(mod_date__gt=F('pub_date')+timedelta(days=3))
+
+####The pk lookup shortcut
+
+	Blog.objects.get(id__exact=14)
+	Blog.objects.get(id=14)
+	Blog.objects.get(pk=14)
+
+####Escaping percent signs and underscores in LIKE statements ---> automatically escape
+
+	Entry.objects.filter(headline__contains='%')
+	SELECT ... WHERE headline LIKE '%\%%'
+
+####Caching and QuerySets
+Each queryset contains a cache, to minimize database access, It is important to kown how it works,in order to write the most efficient code.
+
+	print [e.headline for e in Entry.objects.all()]
+	print [e.pub_date for e in Entry.objects.all()]
+	re-use!
+	query = Entry.objects.all()
+	print [p.headline for p in query]
+	print [p.pub_date for p in query]
+
 ###Complex lookups with Q objects
 
 ###Comparing objects

@@ -5,3 +5,8 @@
 #查看命令执行的返回值
 
 	echo $?  #返回0 成功，非0 失败
+
+#shell command
+##less 
+For text files use less to view them
+	less shi.txt

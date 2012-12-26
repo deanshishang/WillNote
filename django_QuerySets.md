@@ -245,11 +245,148 @@ To update a non-relation filed, provide the new value as a constant, To update F
 	b = Blog.objects.get(pk=1)
 	Entry.objects.all().update(blog=b)
 		
-###Related objects
-####One-to-many relationships
-####Many-to-many relationships
-####One-to-one relationships
+You can filter based on related fields, but you can only unpdate columns inthe model's main table.
 
+	b = Blog.objects.get(pk=1)
+	#update all the headlines belonging to this Blog.
+	Entry.objects.select_related().filter(blog=b).update(headline = 'thins')
+
+Be aware that update method is covered directly to an SQL statement.It is a bulk operation for direct updates.(批量操作直接更新),If you want to make sure that the save() special function to handle that, just loop over them and call save()
+
+	for item in my_queryset:
+		item.save()
+
+Calls update can also use F() objects to update on field based on the value of another field in the model.This is especially useful for incrementing counters based upon their current value.
+
+	Entry.objects.all().update(n_pingbacks=F('n_pingbacks')+1)
+
+You can not introduce joins when you use F() objects in an updated, if that, a filederror will be raised.
+	
+	#raise error
+	Entry.objects.update(headline=F('blog__name'))
+
+###Related objects
+When you define a relationship in a model, instance of that model will have a convenient API to access the related object(s).
+
+An Entry object e can get its associated Blog object by accessing the blog attribute
+
+	e.blog
+*NOTE:*Behind the scenes, this functionality is implemented by python descriptors.(通过python描述符来实现)
+
+Django also creates API accessors for the 'other' side of the relationship -- the link from related model to the model that defines the relationship
+	
+	b.entry_set.all()
+
+####One-to-many relationships
+#####Forward
+		
+	e = Entry.objects.get(id=2)
+	e.blog
+
+	
+	e = Entry.objects.get(id=2)
+	e.blog = some_blog
+	e.save()
+
+If a ForeignKey field has null=True set(it allows NULL values), you can assign None to it.
+
+	e = Entry.objects.get(id=2)
+	e.blog = None
+	e.save()
+	
+Forward access to one-to-many relationships is cached the first time the related object is accessed. Subsequent accesses to the foreign key on the same object instance are cached
+
+	e = Entry.objects.get(id=2)
+	print e.blog #hits the database to retrieve the associated blog
+	print e.blog #does not hits the database use cached version
+
+Note that the selected() queryset method recursively prepolulates the cache of all one-to-many relationships ahead of time.
+
+	e = Entry.objects.get(id=2)
+	print e.blog #does not hits the database, use cached version
+	print e.blog #does not hits the database use cached version
+
+#####Backward
+
+	b = Blog.objects.get(id=1)
+	b.entry_set.all() #returns all entry objects related to blog
+
+	#b.entry_set is a Manager that returns QuerySets
+	b.entry_set.filter(headline__contains='ddd')
+	b.entry_set.count()
+
+You can override the FOO_set name by setting the related_name parameter in the ForeignKey() definition
+
+	blog = ForeignKey(Blog, related_name='entries')
+	b.entries.all()
+	b.entries.count()
+
+You can not access a reverse ForeignKey Manager from the class, it must be accessed from an instance
+
+	Blog.entry_set
+	Traceback:
+	....Manager must be accessed via instance
+
+Other method
+
+	add(obj1, obj2, ...)
+	create(**kwargs)
+	remove(obj1, obj2, ...)
+	clear() #removes all objects from the related object set.
+
+If the clear() method is not available, all objects in the iterable will be added without removing any exitsing dlements
+
+	b.entry_set = [e1, e2]
+
+Each reverse operation described in this section has an immediate effect on the database. Every addition, creation and deletion is immediately and automatically saved to the database.
+
+####Many-to-many relationships
+Both ends of a many-to-many relationship get automatic API access to the other end, The API works just as a "backward" one-to-many relationship,above.
+
+The only difference is in the attribute nameing: The model that defines the ManaToManyField uses the attribute name of that field itself.
+
+	e = Entry.objects.get(id=3)
+	e.authors.all()
+	e.authors.filter(name__contains='Jhon')
+
+	a = Author.objcets.get(id=2)
+	a.entry_set.all()  #also can specify related_name.
+
+####One-to-one relationships
+It is very similar to many-to-one relationships, instances of that model will have access to the related object via a simple attribute of the model
+
+	class EntryDetail(models.Model):
+		entry = models.OneToOneField(Entry)
+		details = models.TextField()
+
+	ed = EntryDetail.objects.get(id=2)
+	ed.entry #returns the related Entry object
+
+That Manager represents a single object, rather than a collection of objects
+
+	e = Entry.objects.get(id=1)
+	e.entrydetail #return the related EntryDetail object if no, raise a DoesNotExist exception
+
+Instance can be assigned to the reverse relationship in the same way as you would assign the forward relationship
+
+	e.entrydetail = ed
+
+How are the backward relationships possible?
+Other object-relational mappers require you to define relationships on both sides. The django developers believe this is a violationi(违反) of the DRY principle, so Django only requires you to define the relationshipe on the end.
+
+But how is this possible, given that a model class does not know which other model classes are releted to it until those other model classes are loaded?
+
+The answer lies in the INSTALLD_APPS settings. The first time any model is loaded, Django iterates over every model in INSTALLED_APPS and creates the backward relationships in memory as needed.
+
+####Queries over related objects
+Following three queries would be identical:
+	
+	Entry.objects.filter(blog=b)
+	Entry.objects.filter(blog=b.id)
+	Entry.objects.filter(blog=5)
+
+###Falling back to raw SQL
+[Performing raw SQL queries](https://docs.djangoproject.com/en/1.4/topics/db/sql/)
 
 ##QuerySet method reference
 

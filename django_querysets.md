@@ -388,5 +388,5 @@ Following three queries would be identical:
 ###Falling back to raw SQL
 [Performing raw SQL queries](https://docs.djangoproject.com/en/1.4/topics/db/sql/)
 
-##QuerySet method reference
+##[QuerySet method reference](https://docs.djangoproject.com/en/1.4/ref/models/querysets/)
 

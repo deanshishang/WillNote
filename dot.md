@@ -71,3 +71,5 @@ django queryset
 #2012/12/25
 perter bash-script 视频
 
+#2012/12/27
+learn shell command 

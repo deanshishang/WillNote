@@ -41,6 +41,7 @@ they exist
 
 ##An alias
 Commands that you can define yourselves,built form other commands
+
 #shell command
 ##less 
 For text files use less to view them
@@ -60,3 +61,41 @@ For text files use less to view them
 	which   #To determine the exact location of a given executable.
 	man , help #getting command documentionshi
 
+#I/O Redirection
+By using some special notations we can redirect the output of many commands to files, devices, and even to the input of other commands
+##Standard Output
+
+	ls > file_list.txt   #overwritten
+
+	ls >>file_list.txt   #appednded
+
+##Standard Input
+By default, standard input gets its contents from the keyboard,But like standard output, it can be redirected, < 
+
+	sort < file_list.txt #process the contents of file_list.txt. The results are output on the display since the standard output was not redirected
+
+	sort < file_list.txt > file_new_list.txt #redirected standard output to another file like this
+
+A command can have both its input and output redirected, Be aware that the order of the redirection does not matter. The only requirement is that the redirection operators(< >) must appear after the other options and arguments in the command.
+
+##Piplines
+The most powerful and useful thing you can do with I/O redirection is to connect multiple commands together with what are called pipelines, the standard output of one command is fet(送出) into the standard input of another.Here is my absolute favorite:
+
+	#ls -l | less #the output of the ls command is fed into less, 
+
+You can make any command have scrolling output, I use this technique all the time.
+
+	#ls -lt | head
+	#du | sort -nr
+	#find . -type f -print | wc -l
+
+##Filters
+One kind of program frequently used in pipelines is called filters. Filters take a standard input and perform an operation upon it and send the results to standard output. In this way, they can be combined to process information in powerful ways, act as filters.
+
+	sort  #sorts standard input then outputs the sorted result on standard output.
+	uniq  #given a sorted stream of data from standard input, it removes duplicate lines of data, it make sure that every line is unique
+	grep  #Examines each line of data it recerves from standard input and out puts every line that contains a specified pattern of characters
+	fmt   #formatted text on standard output
+	pr    #split the data into pages with page breaks,headers and footers in preparation for printing.
+	head  #outputs the first few lines of its input. Useful for getting the header of a file
+	tail  #the last few lines of its input.getting the most recent entries from a log file

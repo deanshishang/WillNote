@@ -1,0 +1,7 @@
+django
+dot.md
+file.txt
+note.md
+python
+shell.md
+vim.md

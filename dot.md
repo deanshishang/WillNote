@@ -80,3 +80,5 @@ learn shell command
 #2013/01/08
 接口讨论 进行代码编写
 
+#2013/01/16
+在django的model中，pk的值大小不一定和表中自己设置的序列号一样。chidianer.order.views 中docontrast部分出现错误

@@ -82,3 +82,6 @@ learn shell command
 
 #2013/01/16
 在django的model中，pk的值大小不一定和表中自己设置的序列号一样。chidianer.order.views 中docontrast部分出现错误
+
+#2013/01/23
+在django的setting设置文件中，STATIC_URL 是指定的URL路径中的名字，而STATIC_DIR 等则是所有指定的文件的寻找的目录
